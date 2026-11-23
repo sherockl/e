@@ -10,7 +10,6 @@
 <style>
   :root {
     --center-width: min(1080px, 100vw);
-    --side-width: calc((100vw - var(--center-width)) / 2);
 
     --stone-dark: #1c1c1c;
     --stone: #2b2b2b;
@@ -45,28 +44,25 @@
     image-rendering: pixelated;
   }
 
-  /* ---------- Боковые изображения ---------- */
-  .side {
+  /* ---------- Фон на весь экран ---------- */
+  .bg {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    width: var(--side-width);
+    inset: 0;
     z-index: 0;
+    background: #1f2a14;
     overflow: hidden;
     pointer-events: none;
-    background:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 16px, transparent 16px 32px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 16px, transparent 16px 32px),
-      #1f2a14;
   }
-  .side.left { left: 0; }
-  .side.right { right: 0; }
-  .side img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-  .side img[hidden] { display: none; }
-  /* Правая картинка отзеркалена по горизонтали */
-  .side.right img { transform: scaleX(-1); }
+  .bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .bg img[hidden] { display: none; }
 
-  /* ---------- Центральный блок (полупрозрачный ~50%) ---------- */
+  /* ---------- Центральный блок (полупрозрачный 50%) ---------- */
   .shell {
     position: relative;
     z-index: 1;
@@ -75,7 +71,7 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    background: rgba(43, 43, 43, 0.2);
+    background: rgba(43, 43, 43, 0.5);
     box-shadow: 0 0 0 4px #000, 0 0 60px rgba(0,0,0,.9);
   }
 
@@ -87,7 +83,6 @@
     background: repeating-linear-gradient(90deg, var(--bevel-dark) 0 6px, var(--stone-light) 6px 12px);
     box-shadow: inset 0 3px 0 var(--bevel-light), inset 0 -3px 0 var(--bevel-dark);
   }
-  /* Круглая и большая иконка */
   .icon-frame {
     flex: 0 0 auto;
     width: 200px;
@@ -101,7 +96,7 @@
     position: relative;
     overflow: hidden;
   }
-  .icon-frame img { width: 100%; height: 100%; object-fit: cover; padding: 0; image-rendering: pixelated; }
+  .icon-frame img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
   .icon-frame .fallback { font-family: var(--font-title); font-size: 36px; color: var(--gold); text-shadow: 2px 2px 0 #000; }
 
   /* ---------- Заголовок ---------- */
@@ -138,7 +133,6 @@
     background: #000;
     box-shadow: var(--pixel-frame);
   }
-  /* Блок с товарами: прозрачность 80% (чёрный фон только 20%) */
   section#catalog {
     background: rgba(0, 0, 0, 0.2);
   }
@@ -238,11 +232,8 @@
   .card .desc { color: var(--muted); font-size: 18px; line-height: 1.15; flex: 1; }
   .card .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; gap: 8px; }
   .card .price { color: var(--gold); font-size: 22px; text-shadow: 2px 2px 0 #000; }
-  .card .status { color: var(--red); font-size: 17px; }
-  .card .status.in { color: var(--grass-light); }
   .card .btn { width: 100%; background: var(--grass); color: #fff; margin-top: 4px; }
-  .card .btn:hover:not(:disabled) { background: var(--grass-light); }
-  .card .btn:disabled { background: #555; color: #999; cursor: not-allowed; }
+  .card .btn:hover { background: var(--grass-light); }
 
   /* ---------- Текстовые разделы ---------- */
   .panel {
@@ -354,7 +345,6 @@
   /* ---------- Адаптивность ---------- */
   @media (max-width: 900px) {
     :root { --center-width: 100vw; }
-    .side { display: none; }
     .shell { box-shadow: none; }
     section.block { margin: 0 10px 18px; }
   }
@@ -376,9 +366,8 @@
 </head>
 <body>
 
-<!-- ============ БОКОВЫЕ ИЗОБРАЖЕНИЯ ============ -->
-<div class="side left"><img id="leftImg" alt=""></div>
-<div class="side right"><img id="rightImg" alt=""></div>
+<!-- ============ ФОН НА ВЕСЬ ЭКРАН ============ -->
+<div class="bg" aria-hidden="true"><img id="bgImg" alt=""></div>
 
 <div class="welcome" id="welcome">
   Добро пожаловать в AFTERHOURS! Выбери предмет и нажми Купить.
@@ -458,10 +447,10 @@
 <script>
 /* =====================================================================
    ИЗОБРАЖЕНИЯ САЙТА — меняй только ссылки здесь
+   bg — фон на весь экран, topIcon — круглая иконка вверху
    ===================================================================== */
 const SITE_IMAGES = {
-    left: "https://i.imgur.com/mJRfnld.png",
-    right: "https://i.imgur.com/mJRfnld.png",
+    bg: "https://i.imgur.com/mJRfnld.png",
     topIcon: "https://i.imgur.com/inhAgFl.png"
 };
 
@@ -470,13 +459,13 @@ const SITE_IMAGES = {
    ===================================================================== */
 const SELLER_NAME = "продавец";
 
-/* Цены и количество по умолчанию для каждого тира.
-   Цену или остаток отдельного товара можно поменять в поле price / stock ниже. */
+/* Цена по умолчанию для каждого тира.
+   Пока везде стоит «золото». Потом можно заменить на числа. */
 const TIERS = {
-  easy:   { label: "Базовые", price: "150 ₽",   stock: 10 },
-  medium: { label: "Средние", price: "450 ₽",   stock: 5 },
-  hard:   { label: "Редкие",  price: "1 200 ₽", stock: 2 },
-  elite:  { label: "Незерит", price: "4 500 ₽", stock: 1 }
+  easy:   { label: "Базовые", price: "золото" },
+  medium: { label: "Средние", price: "золото" },
+  hard:   { label: "Редкие",  price: "золото" },
+  elite:  { label: "Незерит", price: "золото" }
 };
 
 /* =====================================================================
@@ -520,7 +509,7 @@ const RAW_PRODUCTS = [
   { name: "Netherite Spear", id: "minecraft:netherite_spear", tier: "elite", image: "https://minecraft.wiki/images/Held_Netherite_Spear_JE2_BE1.png?bde2c" }
 ];
 
-/* Превращаем список в товары */
+/* Превращаем список в товары (без количества) */
 const PRODUCTS = RAW_PRODUCTS.map((raw, i) => {
   const tier = TIERS[raw.tier];
   return {
@@ -529,7 +518,6 @@ const PRODUCTS = RAW_PRODUCTS.map((raw, i) => {
     description: "",
     category: tier.label,
     price: tier.price,
-    stock: tier.stock,
     image: raw.image || ""
   };
 });
@@ -596,7 +584,6 @@ async function copyText(text) {
    Иначе остаётся буква названия.
    ===================================================================== */
 function buildCard(p) {
-  const inStock = p.stock > 0;
   const letter = esc(p.name.charAt(0));
   const imgTag = isImageUrl(p.image)
     ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">`
@@ -613,11 +600,8 @@ function buildCard(p) {
         ${p.description ? `<div class="desc">${esc(p.description)}</div>` : ""}
         <div class="meta">
           <span class="price">${esc(p.price)}</span>
-          <span class="status ${inStock ? "in" : ""}">${inStock ? `В наличии: ${p.stock}` : "SOLD OUT"}</span>
         </div>
-        <button class="btn" data-buy="${p.id}" ${inStock ? "" : "disabled"}>
-          ${inStock ? "Купить" : "SOLD OUT"}
-        </button>
+        <button class="btn" data-buy="${p.id}">Купить</button>
       </div>
     </article>`;
 }
@@ -652,7 +636,7 @@ function renderFilters() {
    ===================================================================== */
 async function buy(id) {
   const p = PRODUCTS.find(x => x.id === id);
-  if (!p || p.stock <= 0) return;
+  if (!p) return;
 
   const text =
     `Здравствуйте, ${SELLER_NAME}!\n` +
@@ -678,8 +662,7 @@ function setupImage(imgEl, src, onFail) {
 }
 
 function initImages() {
-  setupImage($("#leftImg"), SITE_IMAGES.left);
-  setupImage($("#rightImg"), SITE_IMAGES.right);
+  setupImage($("#bgImg"), SITE_IMAGES.bg);
   setupImage($("#topIcon"), SITE_IMAGES.topIcon, () => {
     $("#topFallback").style.display = "";
   });
@@ -730,7 +713,7 @@ function init() {
 
   $("#catalogGrid").addEventListener("click", e => {
     const btn = e.target.closest("[data-buy]");
-    if (btn && !btn.disabled) buy(parseInt(btn.dataset.buy, 10));
+    if (btn) buy(parseInt(btn.dataset.buy, 10));
   });
 
   $("#contactBtn").addEventListener("click", openChat);
