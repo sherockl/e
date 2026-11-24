@@ -234,12 +234,6 @@
     overflow: hidden;
     border-bottom: 3px solid #000;
   }
-  .card .img .ph {
-    font-family: var(--font-title);
-    font-size: 30px;
-    color: var(--grass-light);
-    text-shadow: 3px 3px 0 #000;
-  }
   /* Картинка товара меньше: внутренний отступ оставляет место по краям */
   .card .img img {
     position: absolute;
@@ -542,7 +536,7 @@ const TIERS = {
    price — число (цена за стак или за штуку). null = "По запросу".
    unit  — "стак" или "шт." (за что именно эта цена).
    image — прямая ссылка на файл картинки (.png, .jpg, .webp).
-   Если картинка не загрузилась, на карточке показывается буква названия.
+   Если картинка не загрузилась, карточка остаётся пустой (без буквы).
    ===================================================================== */
 const RAW_PRODUCTS = [
   { name: "Netherrack", tier: "easy", price: null, unit: "стак", image: "https://minecraft.wiki/images/Netherrack_JE4_BE2.png?8a940" },
@@ -650,10 +644,8 @@ async function copyText(text) {
 /* =====================================================================
    КАРТОЧКИ ТОВАРОВ
    Картинка показывается только если это прямая ссылка на файл.
-   Иначе остаётся буква названия.
    ===================================================================== */
 function buildCard(p) {
-  const letter = esc(p.name.charAt(0));
   const imgTag = isImageUrl(p.image)
     ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">`
     : "";
@@ -661,7 +653,6 @@ function buildCard(p) {
   return `
     <article class="card" data-card="${p.id}">
       <div class="img">
-        <span class="ph">${letter}</span>
         ${imgTag}
       </div>
       <div class="body">
