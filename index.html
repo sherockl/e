@@ -9,8 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
   :root {
-    --center-width: min(1080px, 100vw);
-    --side-width: calc((100vw - var(--center-width)) / 2);
+    --center-width: min(756px, 70vw);
 
     --stone-dark: #1c1c1c;
     --stone: #2b2b2b;
@@ -45,28 +44,25 @@
     image-rendering: pixelated;
   }
 
-  /* ---------- Боковые изображения ---------- */
-  .side {
+  /* ---------- Фон на весь экран ---------- */
+  .bg {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    width: var(--side-width);
+    inset: 0;
     z-index: 0;
+    background: #1f2a14;
     overflow: hidden;
     pointer-events: none;
-    background:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 16px, transparent 16px 32px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 16px, transparent 16px 32px),
-      #1f2a14;
   }
-  .side.left { left: 0; }
-  .side.right { right: 0; }
-  .side img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-  .side img[hidden] { display: none; }
-  /* Правая картинка отзеркалена по горизонтали */
-  .side.right img { transform: scaleX(-1); }
+  .bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .bg img[hidden] { display: none; }
 
-  /* ---------- Центральный блок (полупрозрачный ~50%) ---------- */
+  /* ---------- Центральный блок (полупрозрачный 50%) ---------- */
   .shell {
     position: relative;
     z-index: 1;
@@ -75,34 +71,58 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    background: rgba(43, 43, 43, 0.2);
+    background: rgba(43, 43, 43, 0.5);
     box-shadow: 0 0 0 4px #000, 0 0 60px rgba(0,0,0,.9);
   }
 
   /* ---------- Верхняя панель ---------- */
-  .topbar { display: flex; align-items: center; gap: 16px; padding: 26px 24px 10px; }
+  /* Сетка 1fr auto 1fr: логотип всегда ровно в центре */
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 26px 24px 10px;
+  }
   .topbar .line {
-    flex: 1;
     height: 6px;
     background: repeating-linear-gradient(90deg, var(--bevel-dark) 0 6px, var(--stone-light) 6px 12px);
     box-shadow: inset 0 3px 0 var(--bevel-light), inset 0 -3px 0 var(--bevel-dark);
   }
-  /* Круглая и большая иконка */
   .icon-frame {
-    flex: 0 0 auto;
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background: var(--stone-dark);
-    box-shadow: 0 0 0 4px #000, inset 0 0 0 3px var(--bevel-light);
+    background: transparent;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+    justify-self: center;
+  }
+  /* Логотип заполняет круг полностью */
+  .icon-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    image-rendering: pixelated;
+  }
+  /* Запасная буква, если логотип не загрузился (без фона) */
+  .icon-frame .fallback {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
+    z-index: 1;
+    font-family: var(--font-title);
+    font-size: 36px;
+    color: var(--gold);
+    text-shadow: 2px 2px 0 #000;
+    background: none;
   }
-  .icon-frame img { width: 100%; height: 100%; object-fit: cover; padding: 0; image-rendering: pixelated; }
-  .icon-frame .fallback { font-family: var(--font-title); font-size: 36px; color: var(--gold); text-shadow: 2px 2px 0 #000; }
 
   /* ---------- Заголовок ---------- */
   .hero { text-align: center; padding: 28px 16px 22px; }
@@ -138,7 +158,6 @@
     background: #000;
     box-shadow: var(--pixel-frame);
   }
-  /* Блок с товарами: прозрачность 80% (чёрный фон только 20%) */
   section#catalog {
     background: rgba(0, 0, 0, 0.2);
   }
@@ -198,7 +217,7 @@
 
   /* ---------- Карточка товара ---------- */
   .card {
-    background: rgba(35, 35, 35, 0.3);
+    background: #1a1a1a;
     box-shadow: var(--pixel-frame);
     display: flex;
     flex-direction: column;
@@ -208,10 +227,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 10px, transparent 10px 20px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px),
-      #3a3a3a;
+    background: #1a1a1a;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,13 +240,14 @@
     color: var(--grass-light);
     text-shadow: 3px 3px 0 #000;
   }
+  /* Картинка товара меньше: внутренний отступ оставляет место по краям */
   .card .img img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 10px;
+    padding: 22px;
     image-rendering: pixelated;
   }
   .card .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
@@ -238,11 +255,38 @@
   .card .desc { color: var(--muted); font-size: 18px; line-height: 1.15; flex: 1; }
   .card .meta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: 6px; gap: 8px; }
   .card .price { color: var(--gold); font-size: 22px; text-shadow: 2px 2px 0 #000; }
-  .card .status { color: var(--red); font-size: 17px; }
-  .card .status.in { color: var(--grass-light); }
   .card .btn { width: 100%; background: var(--grass); color: #fff; margin-top: 4px; }
-  .card .btn:hover:not(:disabled) { background: var(--grass-light); }
-  .card .btn:disabled { background: #555; color: #999; cursor: not-allowed; }
+  .card .btn:hover { background: var(--grass-light); }
+
+  /* ---------- Всплывающая подсказка товара (как в Minecraft) ---------- */
+  #tip {
+    position: fixed;
+    display: none;
+    z-index: 300;
+    pointer-events: none;
+    min-width: 220px;
+    max-width: 280px;
+    padding: 10px 14px 12px;
+    background: #100010;
+    border: 3px solid #000;
+    box-shadow:
+      inset 0 0 0 2px #28005a,
+      inset 0 0 0 3px #5a2cb0,
+      0 6px 16px rgba(0,0,0,.7);
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: #fff;
+  }
+  #tip .t-name {
+    font-family: var(--font-title);
+    font-size: 11px;
+    line-height: 1.5;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  #tip .t-tier { color: #b08cff; font-size: 18px; margin-bottom: 8px; }
+  #tip .t-row { color: var(--gold); font-size: 20px; line-height: 1.3; }
+  #tip .t-muted { color: #8a8a8a; font-size: 17px; margin-top: 8px; line-height: 1.2; }
 
   /* ---------- Текстовые разделы ---------- */
   .panel {
@@ -360,7 +404,6 @@
   /* ---------- Адаптивность ---------- */
   @media (max-width: 900px) {
     :root { --center-width: 100vw; }
-    .side { display: none; }
     .shell { box-shadow: none; }
     section.block { margin: 0 10px 18px; }
   }
@@ -374,6 +417,7 @@
     nav.menu a { font-size: 9px; padding: 10px 10px; }
     section.block { padding: 20px 12px 26px; margin: 0 6px 16px; }
     .panel, .steps { padding: 16px; }
+    .card .img img { padding: 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
@@ -382,9 +426,8 @@
 </head>
 <body>
 
-<!-- ============ БОКОВЫЕ ИЗОБРАЖЕНИЯ ============ -->
-<div class="side left"><img id="leftImg" alt=""></div>
-<div class="side right"><img id="rightImg" alt=""></div>
+<!-- ============ ФОН НА ВЕСЬ ЭКРАН ============ -->
+<div class="bg" aria-hidden="true"><img id="bgImg" alt=""></div>
 
 <div class="welcome" id="welcome">
   Добро пожаловать в Боров! Выбери предмет и нажми Купить.
@@ -471,10 +514,10 @@
 <script>
 /* =====================================================================
    ИЗОБРАЖЕНИЯ САЙТА — меняй только ссылки здесь
+   bg — фон на весь экран, topIcon — круглая иконка вверху
    ===================================================================== */
 const SITE_IMAGES = {
-    left: "https://i.imgur.com/mJRfnld.png",
-    right: "https://i.imgur.com/mJRfnld.png",
+    bg: "https://i.imgur.com/mJRfnld.png",
     topIcon: "https://i.imgur.com/inhAgFl.png"
 };
 
@@ -483,23 +526,21 @@ const SITE_IMAGES = {
    ===================================================================== */
 const SELLER_NAME = "продавец";
 
-/* Валюта, которая пишется после цены. Оставь пустой строкой, если не нужна
-   (например: "алм." или "₽"). */
-const CURRENCY = "";
+/* Валюта, которая пишется после цены. */
+const CURRENCY = "зол.";
 
-/* Категории (фильтры) и количество товара в наличии по умолчанию.
-   Остаток отдельного товара можно поменять в поле stock ниже. */
+/* Категории (фильтры). */
 const TIERS = {
-  easy:   { label: "Базовые", stock: 10 },
-  medium: { label: "Средние", stock: 5 },
-  hard:   { label: "Редкие",  stock: 2 },
-  elite:  { label: "Незерит", stock: 1 }
+  easy:   { label: "Базовые" },
+  medium: { label: "Средние" },
+  hard:   { label: "Редкие" },
+  elite:  { label: "Незерит" }
 };
 
 /* =====================================================================
    ТОВАРЫ
    price — число (цена за стак или за штуку). null = "По запросу".
-   unit  — "стак" или "шт." (что именно стоит эта цена).
+   unit  — "стак" или "шт." (за что именно эта цена).
    image — прямая ссылка на файл картинки (.png, .jpg, .webp).
    Если картинка не загрузилась, на карточке показывается буква названия.
    ===================================================================== */
@@ -512,19 +553,14 @@ const RAW_PRODUCTS = [
   { name: "Warped Stem", tier: "easy", price: 3, unit: "стак", image: "https://minecraft.wiki/images/thumb/Warped_Stem_%28UD%29_JE2_BE1.gif/150px-Warped_Stem_%28UD%29_JE2_BE1.gif?81aee" },
   { name: "Nether Wart Block", tier: "easy", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Nether_Wart_Block_JE3.png/160px-Nether_Wart_Block_JE3.png?2555f" },
   { name: "Warped Wart Block", tier: "easy", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Warped_Wart_Block_JE1_BE1.png/160px-Warped_Wart_Block_JE1_BE1.png?aff14" },
-  { name: "Crimson Fungus", tier: "easy", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Crimson_Fungus_JE1_BE1.png/150px-Crimson_Fungus_JE1_BE1.png?e3eed" },
-  { name: "Warped Fungus", tier: "easy", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Warped_Fungus_JE1_BE1.png/150px-Warped_Fungus_JE1_BE1.png?95b25" },
   { name: "Crimson Roots", tier: "easy", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Crimson_Roots_JE1_BE1.png/150px-Crimson_Roots_JE1_BE1.png?8564a" },
   { name: "Warped Roots", tier: "easy", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Warped_Roots_JE1_BE1.png/150px-Warped_Roots_JE1_BE1.png?50147" },
   { name: "Nether Sprouts", tier: "medium", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Nether_Sprouts_JE2_BE2.png/150px-Nether_Sprouts_JE2_BE2.png?849a9" },
   { name: "Weeping Vines", tier: "medium", price: 4, unit: "стак", image: "https://minecraft.wiki/images/thumb/Weeping_Vines_Plant_JE1.png/150px-Weeping_Vines_Plant_JE1.png?8142b" },
   { name: "Twisting Vines", tier: "medium", price: 4, unit: "стак", image: "https://minecraft.wiki/images/thumb/Twisting_Vines_JE1_BE1.png/150px-Twisting_Vines_JE1_BE1.png?959fd" },
-  { name: "Nether Wart", tier: "medium", price: 1, unit: "стак", image: "https://minecraft.wiki/images/thumb/Nether_Wart_%28item%29_JE2_BE1.png/150px-Nether_Wart_%28item%29_JE2_BE1.png?65953" },
-  { name: "Chiseled Nether Bricks", tier: "medium", price: null, unit: "стак", image: "https://minecraft.wiki/images/thumb/Chiseled_Nether_Bricks_JE3_BE3.png/150px-Chiseled_Nether_Bricks_JE3_BE3.png?96336" },
   { name: "Glowstone", tier: "hard", price: 3, unit: "стак", image: "https://minecraft.wiki/images/thumb/Glowstone_JE4_BE2.png/150px-Glowstone_JE4_BE2.png?0d5b0" },
   { name: "Shroomlight", tier: "hard", price: 3, unit: "стак", image: "https://minecraft.wiki/images/Shroomlight_JE2_BE2.png" },
   { name: "Quartz", tier: "hard", price: 3, unit: "стак", image: "https://minecraft.wiki/images/Nether_Quartz_JE3_BE2.png" },
-  { name: "Warped Nylium", tier: "hard", price: null, unit: "стак", image: "https://minecraft.wiki/images/thumb/Warped_Nylium_JE1_BE1.png/150px-Warped_Nylium_JE1_BE1.png?50e47" },
   { name: "Dried Ghast", tier: "hard", price: 16, unit: "стак", image: "https://minecraft.wiki/images/thumb/Dried_Ghast_%28S%29_JE1_BE1.png/150px-Dried_Ghast_%28S%29_JE1_BE1.png?04b9a" },
   { name: "Netherite Sword", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Sword_JE2_BE2.png?8e866" },
   { name: "Netherite Spear", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Held_Netherite_Spear_JE2_BE1.png?bde2c" },
@@ -541,16 +577,16 @@ const RAW_PRODUCTS = [
 /* Превращаем список в товары */
 const PRODUCTS = RAW_PRODUCTS.map((raw, i) => {
   const tier = TIERS[raw.tier];
-  const priceText = raw.price == null
-    ? "По запросу"
-    : `${raw.price}${CURRENCY ? " " + CURRENCY : ""} / ${raw.unit}`;
   return {
     id: i + 1,
     name: raw.name,
     description: "",
     category: tier.label,
-    price: priceText,
-    stock: tier.stock,
+    priceNum: raw.price,
+    unit: raw.unit,
+    price: raw.price == null
+      ? "По запросу"
+      : `${raw.price} ${CURRENCY} / ${raw.unit}`,
     image: raw.image || ""
   };
 });
@@ -617,14 +653,13 @@ async function copyText(text) {
    Иначе остаётся буква названия.
    ===================================================================== */
 function buildCard(p) {
-  const inStock = p.stock > 0;
   const letter = esc(p.name.charAt(0));
   const imgTag = isImageUrl(p.image)
     ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">`
     : "";
 
   return `
-    <article class="card">
+    <article class="card" data-card="${p.id}">
       <div class="img">
         <span class="ph">${letter}</span>
         ${imgTag}
@@ -634,16 +669,14 @@ function buildCard(p) {
         ${p.description ? `<div class="desc">${esc(p.description)}</div>` : ""}
         <div class="meta">
           <span class="price">${esc(p.price)}</span>
-          <span class="status ${inStock ? "in" : ""}">${inStock ? `В наличии: ${p.stock}` : "SOLD OUT"}</span>
         </div>
-        <button class="btn" data-buy="${p.id}" ${inStock ? "" : "disabled"}>
-          ${inStock ? "Купить" : "SOLD OUT"}
-        </button>
+        <button class="btn" data-buy="${p.id}">Купить</button>
       </div>
     </article>`;
 }
 
 function renderProducts(list) {
+  hideTip();
   const grid = $("#catalogGrid");
   grid.innerHTML = list.length
     ? list.map(buildCard).join("")
@@ -673,7 +706,7 @@ function renderFilters() {
    ===================================================================== */
 async function buy(id) {
   const p = PRODUCTS.find(x => x.id === id);
-  if (!p || p.stock <= 0) return;
+  if (!p) return;
 
   const text =
     `Здравствуйте, ${SELLER_NAME}!\n` +
@@ -699,14 +732,75 @@ function setupImage(imgEl, src, onFail) {
 }
 
 function initImages() {
-  setupImage($("#leftImg"), SITE_IMAGES.left);
-  setupImage($("#rightImg"), SITE_IMAGES.right);
+  setupImage($("#bgImg"), SITE_IMAGES.bg);
   setupImage($("#topIcon"), SITE_IMAGES.topIcon, () => {
     $("#topFallback").style.display = "";
   });
   $("#topIcon").addEventListener("load", () => {
     $("#topFallback").style.display = "none";
   });
+}
+
+/* =====================================================================
+   ПОДСКАЗКА ТОВАРА (появляется у курсора)
+   ===================================================================== */
+const tip = document.createElement("div");
+tip.id = "tip";
+document.body.appendChild(tip);
+let tipProductId = null;
+
+function tipHTML(p) {
+  let rows, note;
+  if (p.priceNum == null) {
+    rows = `<div class="t-row">Цена: по запросу</div>`;
+    note = "Цену уточняйте в чате";
+  } else if (p.unit === "стак") {
+    rows = `<div class="t-row">За стак (64 шт.): ${p.priceNum} ${esc(CURRENCY)}</div>`;
+    note = "Цена указана за один стак";
+  } else {
+    rows = `<div class="t-row">За 1 шт.: ${p.priceNum} ${esc(CURRENCY)}</div>`;
+    note = "Цена указана за одну штуку";
+  }
+  return `
+    <div class="t-name">${esc(p.name)}</div>
+    <div class="t-tier">${esc(p.category)}</div>
+    ${rows}
+    <div class="t-muted">${note}</div>`;
+}
+
+function hideTip() {
+  tip.style.display = "none";
+  tipProductId = null;
+}
+
+function moveTip(e) {
+  if (tip.style.display !== "block") return;
+  const pad = 16;
+  let x = e.clientX + pad;
+  let y = e.clientY + pad;
+  if (x + tip.offsetWidth > window.innerWidth - 8) x = e.clientX - tip.offsetWidth - pad;
+  if (y + tip.offsetHeight > window.innerHeight - 8) y = e.clientY - tip.offsetHeight - pad;
+  tip.style.left = Math.max(8, x) + "px";
+  tip.style.top = Math.max(8, y) + "px";
+}
+
+function initTooltip() {
+  const grid = $("#catalogGrid");
+
+  grid.addEventListener("mouseover", e => {
+    const card = e.target.closest("[data-card]");
+    if (!card) { hideTip(); return; }
+    const id = parseInt(card.dataset.card, 10);
+    if (id === tipProductId) return;
+    const p = PRODUCTS.find(x => x.id === id);
+    if (!p) return;
+    tipProductId = id;
+    tip.innerHTML = tipHTML(p);
+    tip.style.display = "block";
+  });
+
+  grid.addEventListener("mousemove", moveTip);
+  grid.addEventListener("mouseleave", hideTip);
 }
 
 /* =====================================================================
@@ -751,12 +845,13 @@ function init() {
 
   $("#catalogGrid").addEventListener("click", e => {
     const btn = e.target.closest("[data-buy]");
-    if (btn && !btn.disabled) buy(parseInt(btn.dataset.buy, 10));
+    if (btn) buy(parseInt(btn.dataset.buy, 10));
   });
 
   $("#contactBtn").addEventListener("click", openChat);
   $("#welcomeClose").addEventListener("click", () => $("#welcome").classList.remove("show"));
 
+  initTooltip();
   initVisitors();
   initFirstVisit();
 }
