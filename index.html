@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Боров</title>
+<title>Жирный боров</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -430,7 +430,7 @@
 <div class="bg" aria-hidden="true"><img id="bgImg" alt=""></div>
 
 <div class="welcome" id="welcome">
-  Добро пожаловать в Боров! Выбери предмет и нажми Купить.
+  Добро пожаловать в Жирный боров! Выбери предмет и нажми Купить.
   <button id="welcomeClose" aria-label="Закрыть">×</button>
 </div>
 
@@ -447,7 +447,7 @@
   </header>
 
   <div class="hero">
-    <h1>Боров</h1>
+    <h1>Жирный боров</h1>
     <p class="slogan">Всегда жирный</p>
   </div>
 
@@ -491,7 +491,7 @@
   <section class="block" id="about">
     <h2 class="section-title">ABOUT</h2>
     <div class="panel">
-      <p>Боров нравится всем и медведям тоже</p>
+      <p>Жирный боров нравится всем и медведям тоже</p>
       <p>Вещи здесь ограничены по количеству и исчезают с полки без предупреждения. Ведь Медведям они тоже нужны</p>
     </div>
 
@@ -504,7 +504,7 @@
   </section>
 
   <footer>
-    Боров
+    Жирный боров
     <div class="visitors" id="visitors"></div>
   </footer>
 </div>
@@ -559,8 +559,8 @@ const RAW_PRODUCTS = [
   { name: "Weeping Vines", tier: "medium", price: 4, unit: "стак", image: "https://minecraft.wiki/images/thumb/Weeping_Vines_Plant_JE1.png/150px-Weeping_Vines_Plant_JE1.png?8142b" },
   { name: "Twisting Vines", tier: "medium", price: 4, unit: "стак", image: "https://minecraft.wiki/images/thumb/Twisting_Vines_JE1_BE1.png/150px-Twisting_Vines_JE1_BE1.png?959fd" },
   { name: "Glowstone", tier: "hard", price: 3, unit: "стак", image: "https://minecraft.wiki/images/thumb/Glowstone_JE4_BE2.png/150px-Glowstone_JE4_BE2.png?0d5b0" },
-  { name: "Shroomlight", tier: "hard", price: 3, unit: "стак", image: "https://minecraft.wiki/images/Shroomlight_JE2_BE2.png" },
-  { name: "Quartz", tier: "hard", price: 3, unit: "стак", image: "https://minecraft.wiki/images/Nether_Quartz_JE3_BE2.png" },
+  { name: "Shroomlight", tier: "hard", price: 3, unit: "стак", image: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/shroomlight.png" },
+  { name: "Quartz", tier: "hard", price: 3, unit: "стак", image: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/quartz.png" },
   { name: "Dried Ghast", tier: "hard", price: 16, unit: "стак", image: "https://minecraft.wiki/images/thumb/Dried_Ghast_%28S%29_JE1_BE1.png/150px-Dried_Ghast_%28S%29_JE1_BE1.png?04b9a" },
   { name: "Netherite Sword", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Sword_JE2_BE2.png?8e866" },
   { name: "Netherite Spear", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Held_Netherite_Spear_JE2_BE1.png?bde2c" },
@@ -568,10 +568,10 @@ const RAW_PRODUCTS = [
   { name: "Netherite Shovel", tier: "elite", price: 32, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Shovel_JE2_BE1.png?0f765" },
   { name: "Netherite Pickaxe", tier: "elite", price: 32, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Pickaxe_JE3_BE2.png?36cb3" },
   { name: "Netherite Hoe", tier: "elite", price: 32, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Hoe_JE2_BE2.png?d1cdd" },
-  { name: "Netherite Helmet", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Helmet_JE2_BE2.png" },
-  { name: "Netherite Chestplate", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Chestplate_JE2_BE2.png" },
-  { name: "Netherite Leggings", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Leggings_JE2_BE2.png" },
-  { name: "Netherite Boots", tier: "elite", price: 64, unit: "шт.", image: "https://minecraft.wiki/images/Netherite_Boots_JE2_BE2.png" }
+  { name: "Netherite Helmet", tier: "elite", price: 64, unit: "шт.", image: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_helmet.png" },
+  { name: "Netherite Chestplate", tier: "elite", price: 64, unit: "шт.", image: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_chestplate.png" },
+  { name: "Netherite Leggings", tier: "elite", price: 64, unit: "шт.", image: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_leggings.png" },
+  { name: "Netherite Boots", tier: "elite", price: 64, unit: "шт.", image: "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_boots.png" }
 ];
 
 /* Превращаем список в товары */
